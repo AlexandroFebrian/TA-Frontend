@@ -107,11 +107,21 @@ export default function CameraComponent() {
 
       console.log(canvas.width, canvas.height)
 
+      if (isFrontCamera) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1); // Mirror horizontal
+      }  
+
       // Gambar video ke canvas
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       // Simpan hasil gambar sebagai Base64
       setCapturedImage(canvas.toDataURL("image/jpg"));
+
+      window.scrollTo({
+        top: document.getElementById("HasilGambar").offsetTop,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -122,6 +132,7 @@ export default function CameraComponent() {
   };
 
   const getRecommendation = async () => {
+    stopCamera();
     setResponse(null);
     if(capturedImage){
       setLoading(true);
@@ -174,6 +185,15 @@ export default function CameraComponent() {
     }
   }, [selectedDevice])
 
+  useEffect(() => {
+    if(response){
+      window.scrollTo({
+        top: document.getElementById("Recommendation").offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  }, [response])
+
   return (
     <>
       {
@@ -208,22 +228,21 @@ export default function CameraComponent() {
         </div>
       }
       <div className="w-full flex justify-center xl:py-6">
-        <div className=" xl:w-1/2 w-full shadow-lg xl:rounded-lg p-6 bg-white">
+        <div className=" xl:w-1/2 w-full p-6 rounded-2xl shadow-2xl bg-white border border-gray-300">
           <div className="flex items-center justify-between">
             <h1 className=" text-2xl font-semibold mr-4">Kamera</h1>
             <Button
               onClick={checkCamera}
               disabled={devices.length != 0}
-              className={"bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"}
+              className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
             >
               Cek Kamera
             </Button>
-            
           </div>
           <select 
             name="" 
             id="" 
-            className=" border border-gray-300 rounded w-full p-2 mt-2 hover:cursor-pointer" 
+            className=" w-full h-12 p-3 mt-4 rounded-xl bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:cursor-pointer" 
             onChange={(e) => setSelectedDevice(e.target.value)}
           >
 
@@ -242,9 +261,9 @@ export default function CameraComponent() {
             ref={videoRef} 
             autoPlay 
             playsInline
-            className={`w-full mt-3 border border-gray-100 rounded aspect-square ${!stream && "hidden"} ${isFrontCamera && "transform scale-x-[-1]"}`}
+            className={`w-full rounded-xl mt-3 shadow-md border border-gray-100 aspect-square ${!stream && "hidden"} ${isFrontCamera && "transform scale-x-[-1]"}`}
           />
-          <div className={`w-full mt-3 border border-gray-100 rounded aspect-square flex items-center justify-center ${stream && "hidden"}`}>
+          <div className={`w-full mt-3 border border-gray-100 rounded-xl shadow-md aspect-square flex items-center justify-center ${stream && "hidden"}`}>
             <img src={noCameraIcon} alt="Camera" className=" w-1/2"/>
           </div>
 
@@ -253,14 +272,14 @@ export default function CameraComponent() {
             <Button 
               onClick={startCamera} 
               disabled={stream !== null || selectedDevice === null}
-              className={"bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-2 px-4 rounded"}
+              className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
             >
               Buka Kamera
             </Button>
             <Button
               onClick={stopCamera}
               disabled={stream === null}
-              className={"bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold py-2 px-4 rounded"}
+              className={"bg-gradient-to-r from-red-600 to-red-500 bg-[size:_150%] bg-[position:_100%_100%] hover:bg-[position:_0%_0%]"}
             >
               Tutup Kamera
             </Button>
@@ -269,26 +288,27 @@ export default function CameraComponent() {
           <Button
             onClick={captureImage}
             disabled={stream === null}
-            className={"w-full bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"}
+            className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
           >
             Ambil Gambar
           </Button>
 
           <canvas ref={canvasRef} className="hidden" />
-          <h1 className=" mt-3 text-2xl font-semibold">Hasil Gambar</h1>
-          <div className="mt-3 w-full aspect-square border border-gray-100 rounded">
-            { capturedImage 
+          <h1 id="HasilGambar" className=" mt-3 text-2xl font-semibold">Hasil Gambar</h1>
+          <div className="mt-3 w-full aspect-square border border-gray-100 rounded-xl">
+            { 
+            capturedImage 
               ?
               <img 
                 src={capturedImage} 
                 alt="Captured" 
-                className="w-full rounded "
+                className="w-full rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
               />
               :
               <img 
                 src={profileIcon} 
                 alt="Profile" 
-                className="w-full rounded "
+                className="w-full rounded-xl shadow-md opacity-50"
               />
             }
           </div>
@@ -296,7 +316,7 @@ export default function CameraComponent() {
           <Button
             onClick={getRecommendation}
             disabled={capturedImage === null}
-            className={"w-full bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"}
+            className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
           >
             Cek Bentuk Wajah dan Dapatkan Rekomendasi
           </Button>

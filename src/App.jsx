@@ -7,6 +7,7 @@ import loadingSpinner from "./assets/loading-spinner.svg"
 import xCrossRed from "./assets/x-cross-red.svg"
 import xCrossBlack from "./assets/x-cross-black.svg"
 import Recommendation from "./Recommendation";
+import { FiX } from "react-icons/fi";
 
 export default function CameraComponent() {
   const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -159,7 +160,7 @@ export default function CameraComponent() {
         `${backendURL}/get-recommendation`, 
         formData
       ).then(response => {
-          console.log(response.data);
+          // console.log(response.data);
           if(response.status == 200){
             setResponse(response.data.faces);
           }else{
@@ -170,7 +171,7 @@ export default function CameraComponent() {
         .catch(error => {
           // console.log(error.response.data.error);
           setLoading(false);
-          setError(error.response.data.error);
+          setError(error.response?.data.error || error.message);
         });
     }
   }
@@ -216,7 +217,7 @@ export default function CameraComponent() {
         <div className="w-full h-screen flex items-center justify-center fixed bg-black/40 top-0 z-10 p-6">
           <div className="w-[30rem] h-fit bg-white p-12 rounded-lg shadow-lg relative">
             <div className="absolute top-3 right-3 cursor-pointer" onClick={() => setError(null)}>
-              <img src={xCrossBlack} alt="Close"/>
+              <FiX size={"25"}/>
             </div>
             <div className="w-full flex justify-center">
               <img src={xCrossRed} alt="Error" className="w-1/2"/>
@@ -228,103 +229,107 @@ export default function CameraComponent() {
         </div>
       }
       <div className="w-full flex justify-center xl:py-6">
-        <div className=" xl:w-1/2 w-full p-6 rounded-2xl shadow-2xl bg-white border border-gray-300">
-          <div className="flex items-center justify-between">
-            <h1 className=" text-2xl font-semibold mr-4">Kamera</h1>
+        <div className=" xl:w-1/2 w-full rounded-2xl shadow-2xl bg-white border border-gray-300">
+          <div className="p-6 flex rounded-t-2xl items-center justify-between gap-3 bg-gradient-to-r from-blue-500 to-blue-800">
+            <h1 className=" text-xl xl:text-2xl font-semibold text-white">Rekomendasi Kacamata</h1>
             <Button
               onClick={checkCamera}
               disabled={devices.length != 0}
-              className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+              className={"bg-gradient-to-r from-green-500 to-green-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]W"}
             >
               Cek Kamera
             </Button>
           </div>
-          <select 
-            name="" 
-            id="" 
-            className=" w-full h-12 p-3 mt-4 rounded-xl bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:cursor-pointer" 
-            onChange={(e) => setSelectedDevice(e.target.value)}
-          >
-
-            {
-              devices.length == 0
-              ?
-              <option value="">No Camera Available</option>
-              :
-              devices.map((device, index) => (
-                <option key={index} value={device.deviceId}>{device.label}</option>
-              ))
-            }
-          </select>
-          
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline
-            className={`w-full rounded-xl mt-3 shadow-md border border-gray-100 aspect-square ${!stream && "hidden"} ${isFrontCamera && "transform scale-x-[-1]"}`}
-          />
-          <div className={`w-full mt-3 border border-gray-100 rounded-xl shadow-md aspect-square flex items-center justify-center ${stream && "hidden"}`}>
-            <img src={noCameraIcon} alt="Camera" className=" w-1/2"/>
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {/* <button onClick={startCamera} disabled={stream !== null}>Open Camera</button> */}
-            <Button 
-              onClick={startCamera} 
-              disabled={stream !== null || selectedDevice === null}
-              className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+          <div className="px-6 pb-6 pt-4">
+            <p className="font-semibold text-xl">Daftar Kamera: </p>
+            <select 
+              name="" 
+              id="" 
+              className=" w-full h-12 p-3 mt-2 rounded-xl bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:cursor-pointer" 
+              onChange={(e) => setSelectedDevice(e.target.value)}
             >
-              Buka Kamera
-            </Button>
+
+              {
+                devices.length == 0
+                ?
+                <option value="">Kamera tidak tersedia</option>
+                :
+                devices.map((device, index) => (
+                  <option key={index} value={device.deviceId}>{device.label}</option>
+                ))
+              }
+            </select>
+            
+            <video 
+              ref={videoRef} 
+              autoPlay 
+              playsInline
+              className={`w-full rounded-xl mt-3 shadow-md border border-gray-100 aspect-square ${!stream && "hidden"} ${isFrontCamera && "transform scale-x-[-1]"}`}
+            />
+            <div className={`w-full mt-3 border border-gray-100 rounded-xl shadow-md aspect-square flex items-center justify-center ${stream && "hidden"}`}>
+              <img src={noCameraIcon} alt="Camera" className=" w-1/2 opacity-50"/>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {/* <button onClick={startCamera} disabled={stream !== null}>Open Camera</button> */}
+              <Button 
+                onClick={startCamera} 
+                disabled={stream !== null || selectedDevice === null}
+                className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+              >
+                Buka Kamera
+              </Button>
+              <Button
+                onClick={stopCamera}
+                disabled={stream === null}
+                className={"bg-gradient-to-r from-red-600 to-red-500 bg-[size:_150%] bg-[position:_100%_100%] hover:bg-[position:_0%_0%]"}
+              >
+                Tutup Kamera
+              </Button>
+            </div>
+
             <Button
-              onClick={stopCamera}
+              onClick={captureImage}
               disabled={stream === null}
-              className={"bg-gradient-to-r from-red-600 to-red-500 bg-[size:_150%] bg-[position:_100%_100%] hover:bg-[position:_0%_0%]"}
+              className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
             >
-              Tutup Kamera
+              Ambil Gambar
             </Button>
-          </div>
 
-          <Button
-            onClick={captureImage}
-            disabled={stream === null}
-            className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
-          >
-            Ambil Gambar
-          </Button>
+            <canvas ref={canvasRef} className="hidden" />
+            <h1 id="HasilGambar" className=" mt-3 text-2xl font-semibold">Hasil Gambar</h1>
+            <div className="mt-3 w-full aspect-square border border-gray-100 rounded-xl">
+              { 
+              capturedImage 
+                ?
+                <img 
+                  src={capturedImage} 
+                  alt="Captured" 
+                  className="w-full rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
+                />
+                :
+                <img 
+                  src={profileIcon} 
+                  alt="Profile" 
+                  className="w-full rounded-xl shadow-md opacity-50"
+                />
+              }
+            </div>
+            
+            <Button
+              onClick={getRecommendation}
+              disabled={capturedImage === null}
+              className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+            >
+              Cek Bentuk Wajah dan Dapatkan Rekomendasi
+            </Button>
+            {/* <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            /> */}
 
-          <canvas ref={canvasRef} className="hidden" />
-          <h1 id="HasilGambar" className=" mt-3 text-2xl font-semibold">Hasil Gambar</h1>
-          <div className="mt-3 w-full aspect-square border border-gray-100 rounded-xl">
-            { 
-            capturedImage 
-              ?
-              <img 
-                src={capturedImage} 
-                alt="Captured" 
-                className="w-full rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
-              />
-              :
-              <img 
-                src={profileIcon} 
-                alt="Profile" 
-                className="w-full rounded-xl shadow-md opacity-50"
-              />
-            }
           </div>
-          
-          <Button
-            onClick={getRecommendation}
-            disabled={capturedImage === null}
-            className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
-          >
-            Cek Bentuk Wajah dan Dapatkan Rekomendasi
-          </Button>
-          {/* <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          /> */}
         </div>
 
 

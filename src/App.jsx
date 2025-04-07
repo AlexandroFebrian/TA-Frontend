@@ -237,7 +237,7 @@ export default function CameraComponent() {
             <Button
               onClick={checkCamera}
               disabled={devices.length != 0}
-              className={"bg-gradient-to-r from-green-500 to-green-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]W"}
+              className={"bg-gradient-to-r from-green-500 to-green-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%] active:bg-[position:_100%_100%]"}
             >
               Cek Kamera
             </Button>
@@ -277,14 +277,14 @@ export default function CameraComponent() {
               <Button 
                 onClick={startCamera} 
                 disabled={stream !== null || selectedDevice === null}
-                className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+                className={"bg-gradient-to-r from-blue-400 to-blue-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%] active:bg-[position:_100%_100%]"}
               >
                 Buka Kamera
               </Button>
               <Button
                 onClick={stopCamera}
                 disabled={stream === null}
-                className={"bg-gradient-to-r from-red-600 to-red-500 bg-[size:_150%] bg-[position:_100%_100%] hover:bg-[position:_0%_0%]"}
+                className={"bg-gradient-to-r from-red-400 to-red-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%] active:bg-[position:_100%_100%]"}
               >
                 Tutup Kamera
               </Button>
@@ -293,7 +293,7 @@ export default function CameraComponent() {
             <Button
               onClick={captureImage}
               disabled={stream === null}
-              className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+              className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%] active:bg-[position:_100%_100%]"}
             >
               Ambil Gambar
             </Button>
@@ -321,7 +321,7 @@ export default function CameraComponent() {
             <Button
               onClick={getRecommendation}
               disabled={capturedImage === null}
-              className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-700 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%]"}
+              className={"w-full mt-2 bg-gradient-to-r from-green-400 to-green-600 bg-[size:_150%] bg-[position:_0%_0%] hover:bg-[position:_100%_100%] active:bg-[position:_100%_100%]"}
             >
               Cek Bentuk Wajah dan Dapatkan Rekomendasi
             </Button>

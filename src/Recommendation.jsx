@@ -49,12 +49,13 @@ export default function Recommendation({item}) {
         <h1 className=' text-2xl font-semibold text-white'>Anda adalah seorang {gender[item.gender]} yang memiliki wajah berbentuk {faceshape[item.faceshape]}</h1>
       </div>
       <div className='px-6 pb-6 pt-4'>
-        <h2 className=' text-xl font-semibold'>Rekomendasi model kacamata</h2>
+        <h2 className=' text-2xl font-semibold'>Rekomendasi model kacamata</h2>
 
         {
           item.eyeglasses.map((eyeglass, index) => (
             <div key={index} className=' mt-3'>
-              <p className='font-semibold'>{eyeglass.model}</p>
+              <hr className=' my-4 text-gray-300'/>
+              <p className='font-semibold text-xl'>{eyeglass.model}</p>
               <div className=' w-fit flex flex-row gap-6 overflow-x-auto overflow-y-hidden mt-3 p-4'>
                 {
                   eyeglass.images.map((image, index) => (

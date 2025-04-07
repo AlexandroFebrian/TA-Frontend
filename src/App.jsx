@@ -27,6 +27,7 @@ export default function CameraComponent() {
     try{
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         console.error("getUserMedia is not supported on this browser");
+        setError("getUserMedia is not supported on this browser")
         return;
       }else{
         const userMedia = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -39,6 +40,7 @@ export default function CameraComponent() {
       }
     }catch(error){
       console.error("Error getting cameras: ", error);
+      setError("Error getting cameras: " + error);
     }
   }
 
@@ -101,12 +103,12 @@ export default function CameraComponent() {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
 
-      console.log(video.videoWidth, video.videoHeight)
+      // console.log(video.videoWidth, video.videoHeight)
       // Pastikan ukuran canvas sesuai dengan resolusi video
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
-      console.log(canvas.width, canvas.height)
+      // console.log(canvas.width, canvas.height)
 
       if (isFrontCamera) {
         ctx.translate(canvas.width, 0);

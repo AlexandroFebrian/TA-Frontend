@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { use, useEffect, useRef, useState } from 'react'
 import { FiArrowRight, FiArrowLeft, FiX } from "react-icons/fi";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Zoom, Navigation, Pagination } from 'swiper/modules';
@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export default function Recommendation({item}) {
+  // const swiperRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [eyeglassModel, setEyeglassModel] = useState(null);
@@ -16,6 +17,7 @@ export default function Recommendation({item}) {
   let faceshape = { Heart: 'hati', Oblong: 'persegi panjang', Oval: 'oval', Round: 'bulat', Square: 'persegi' };
 
   const openModal = (model, images, index) => {
+    // console.log(index)
     setEyeglassModel(model);
     setSelectedImage(images);
     setCurrentIndex(index);
@@ -29,17 +31,17 @@ export default function Recommendation({item}) {
     document.body.style.overflow = 'unset';
   };
 
-  const nextImage = () => {
-    if (selectedImage) {
-      setCurrentIndex((prev) => (prev + 1) % selectedImage.length);
-    }
-  };
+  // const nextImage = () => {
+  //   if (selectedImage) {
+  //     setCurrentIndex((prev) => (prev + 1) % selectedImage.length);
+  //   }
+  // };
 
-  const prevImage = () => {
-    if (selectedImage) {
-      setCurrentIndex((prev) => (prev - 1 + selectedImage.length) % selectedImage.length);
-    }
-  };
+  // const prevImage = () => {
+  //   if (selectedImage) {
+  //     setCurrentIndex((prev) => (prev - 1 + selectedImage.length) % selectedImage.length);
+  //   }
+  // };
 
   return (
     <div id='Recommendation' className=" w-auto mt-6 bg-white rounded-2xl shadow-lg">
@@ -51,12 +53,13 @@ export default function Recommendation({item}) {
 
         {
           item.eyeglasses.map((eyeglass, index) => (
-            <div className=' mt-3'>
+            <div key={index} className=' mt-3'>
               <p className='font-semibold'>{eyeglass.model}</p>
               <div className=' w-fit flex flex-row gap-6 overflow-x-auto overflow-y-hidden mt-3 p-4'>
                 {
                   eyeglass.images.map((image, index) => (
                     <img 
+                      key={index}
                       src={`data:image/jpg;base64,${image}`} 
                       alt={eyeglass.model} 
                       className=' xl:w-[30rem] xl:h-[30rem] md:w-[20rem] md:h-[20rem] w-2/3 aspect-ratio rounded-xl transition-all duration-300 hover:scale-105 hover:cursor-pointer active:scale-95' 
@@ -84,11 +87,13 @@ export default function Recommendation({item}) {
                 </button> */}
               </div>
               <Swiper
+                // ref={swiperRef}
                 modules={[Zoom, Navigation, Pagination]}
                 zoom={true}
                 navigation
                 pagination={{ clickable: true }}
                 speed={500}
+                initialSlide={currentIndex}
                 className='w-full h-[calc(100vh-5rem)]'
               >
                 {selectedImage.map((src, index) => (
@@ -96,7 +101,7 @@ export default function Recommendation({item}) {
                     <div className="swiper-zoom-container p-12">
                       <img 
                         src={`data:image/jpg;base64,${src}`} 
-                        alt={`Slide ${index}`} 
+                        alt={`Image ${index}`} 
                         className='w-full'/>
                     </div>
                   </SwiperSlide>

@@ -53,6 +53,7 @@ export default function CameraComponent() {
         setSelectedDevice(videoDevices[0].deviceId);
       }
     } catch (error) {
+      setError("Error getting cameras: " + error);
       console.error("Error getting cameras: ", error);
     }
   };
@@ -64,11 +65,14 @@ export default function CameraComponent() {
     }
 
     try {
+      if (stream) {
+        stopCamera();
+      }
       const mediaStream = await navigator.mediaDevices.getUserMedia({ 
         video: {
           deviceId: selectedDevice ? { exact: selectedDevice } : undefined,
-          width: { max: 1920 },
-          height: { max: 1920 },
+          width: { min: 720, max: 1920, ideal: 1920 },
+          height: { min: 720, max: 1920, ideal: 1920 },
           aspectRatio: 1,
         } 
       });
@@ -77,8 +81,21 @@ export default function CameraComponent() {
       setStream(mediaStream);
 
       const selectedCam = devices.find(device => device.deviceId === selectedDevice);
-      setIsFrontCamera(selectedCam && (selectedCam.label.toLowerCase().includes("front") || selectedCam.label.toLowerCase().includes("user") || selectedCam.label.toLowerCase().includes("facing")));
+      setIsFrontCamera(
+        selectedCam 
+        && 
+        (
+          selectedCam.label.toLowerCase().includes("front") 
+          || 
+          selectedCam.label.toLowerCase().includes("user") 
+          || 
+          selectedCam.label.toLowerCase().includes("facing")
+        ) 
+        && !selectedCam.label.toLowerCase().includes("back")
+      );
+
     } catch (error) {
+      setError("Error accessing the camera: " + error);
       console.error("Error accessing the camera:", error);
     }
   };
@@ -105,8 +122,10 @@ export default function CameraComponent() {
 
       // console.log(video.videoWidth, video.videoHeight)
       // Pastikan ukuran canvas sesuai dengan resolusi video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const highestResolution = Math.max(video.videoWidth, video.videoHeight);
+      const lowestResolution = Math.min(video.videoWidth, video.videoHeight);
+      canvas.width = lowestResolution;
+      canvas.height = lowestResolution;
 
       // console.log(canvas.width, canvas.height)
 
@@ -116,10 +135,20 @@ export default function CameraComponent() {
       }  
 
       // Gambar video ke canvas
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(
+        video, 
+        video.videoWidth == highestResolution ? (highestResolution - lowestResolution)/2 : 0, 
+        video.videoHeight == highestResolution ? (highestResolution - lowestResolution)/2 : 0, 
+        canvas.width, 
+        canvas.height,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
       // Simpan hasil gambar sebagai Base64
-      setCapturedImage(canvas.toDataURL("image/jpg"));
+      setCapturedImage(canvas.toDataURL("image/png"));
 
       window.scrollTo({
         top: document.getElementById("HasilGambar").offsetTop,
@@ -225,7 +254,7 @@ export default function CameraComponent() {
               <img src={xCrossRed} alt="Error" className="w-1/2"/>
             </div>
             <div className="w-full flex justify-center mt-3">
-              <h1 className="font-semibold text-xl">Error: {error}</h1>
+              <h1 className="font-semibold text-xl text-center">Error: {error}</h1>
             </div>
           </div>
         </div>
@@ -247,7 +276,7 @@ export default function CameraComponent() {
             <select 
               name="" 
               id="" 
-              className=" w-full h-12 p-3 mt-2 rounded-xl bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:cursor-pointer" 
+              className=" w-full h-12 p-3 mt-2 rounded-xl bg-white border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:cursor-pointer" 
               onChange={(e) => setSelectedDevice(e.target.value)}
             >
 
@@ -266,9 +295,9 @@ export default function CameraComponent() {
               ref={videoRef} 
               autoPlay 
               playsInline
-              className={`w-full rounded-xl mt-3 shadow-md border border-gray-100 aspect-square ${!stream && "hidden"} ${isFrontCamera && "transform scale-x-[-1]"}`}
+              className={`w-full rounded-xl mt-3 shadow-lg border border-gray-100 aspect-square ${!stream && "hidden"} ${isFrontCamera && "transform scale-x-[-1]"}`}
             />
-            <div className={`w-full mt-3 border border-gray-100 rounded-xl shadow-md aspect-square flex items-center justify-center ${stream && "hidden"}`}>
+            <div className={`w-full mt-3 border border-gray-100 rounded-xl shadow-lg aspect-square flex items-center justify-center ${stream && "hidden"}`}>
               <img src={noCameraIcon} alt="Camera" className=" w-1/2 opacity-50"/>
             </div>
 
@@ -300,20 +329,20 @@ export default function CameraComponent() {
 
             <canvas ref={canvasRef} className="hidden" />
             <h1 id="HasilGambar" className=" mt-3 text-2xl font-semibold">Hasil Gambar</h1>
-            <div className="mt-3 w-full aspect-square border border-gray-100 rounded-xl">
+            <div className="mt-3 w-full aspect-square border flex items-center justify-center border-gray-100 rounded-xl shadow-lg">
               { 
               capturedImage 
                 ?
                 <img 
                   src={capturedImage} 
                   alt="Captured" 
-                  className="w-full rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
+                  className="w-full rounded-xl shadow-lg transition duration-300 ease-in-out"
                 />
                 :
                 <img 
                   src={profileIcon} 
                   alt="Profile" 
-                  className="w-full rounded-xl shadow-md opacity-50"
+                  className="w-full rounded-xl shadow-lg opacity-50"
                 />
               }
             </div>

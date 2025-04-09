@@ -213,6 +213,10 @@ export default function CameraComponent() {
 
   useEffect(() => {
     if(selectedDevice){
+      window.scrollTo({
+        top: document.getElementById("Camera").offsetTop,
+        behavior: 'smooth'
+      });
       startCamera();
     }
   }, [selectedDevice])
@@ -260,7 +264,7 @@ export default function CameraComponent() {
         </div>
       }
       <div className="w-full flex justify-center xl:py-6">
-        <div className=" xl:w-1/2 w-full rounded-2xl shadow-2xl bg-white border border-gray-300">
+        <div className=" xl:w-[75vh] w-full rounded-2xl shadow-2xl bg-white border border-gray-300">
           <div className="p-6 flex rounded-t-2xl items-center justify-between gap-3 bg-gradient-to-r from-blue-500 to-blue-800">
             <h1 className=" text-xl xl:text-2xl font-semibold text-white">Rekomendasi Kacamata</h1>
             <Button
@@ -271,7 +275,7 @@ export default function CameraComponent() {
               Cek Kamera
             </Button>
           </div>
-          <div className="px-6 pb-6 pt-4">
+          <div className="px-6 pb-6 pt-4" id="Camera">
             <p className="font-semibold text-xl">Daftar Kamera: </p>
             <select 
               name="" 

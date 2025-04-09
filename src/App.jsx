@@ -263,8 +263,8 @@ export default function CameraComponent() {
           </div>
         </div>
       }
-      <div className="w-full flex justify-center xl:py-6">
-        <div className=" xl:w-[75vh] w-full rounded-2xl shadow-2xl bg-white border border-gray-300">
+      <div className="w-full flex justify-center md:p-6">
+        <div className=" md:w-[75vh] w-full rounded-2xl shadow-2xl bg-white border border-gray-300">
           <div className="p-6 flex rounded-t-2xl items-center justify-between gap-3 bg-gradient-to-r from-blue-500 to-blue-800">
             <h1 className=" text-xl xl:text-2xl font-semibold text-white">Rekomendasi Kacamata</h1>
             <Button

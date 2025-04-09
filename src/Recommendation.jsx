@@ -44,7 +44,7 @@ export default function Recommendation({item}) {
   // };
 
   return (
-    <div id='Recommendation' className=" w-auto mt-6 bg-white rounded-2xl shadow-lg">
+    <div id='Recommendation' className=" w-auto md:my-6 md:mx-6 bg-white rounded-2xl shadow-lg mt-6">
       <div className='w-full rounded-t-2xl p-6 bg-gradient-to-r from-blue-500 to-blue-800 flex flex-col items-center justify-center'>
         <h1 className=' text-2xl font-semibold text-white'>Anda adalah seorang {gender[item.gender]} yang memiliki wajah berbentuk {faceshape[item.faceshape]}</h1>
       </div>
@@ -63,7 +63,7 @@ export default function Recommendation({item}) {
                       key={index}
                       src={`data:image/jpg;base64,${image}`} 
                       alt={eyeglass.model} 
-                      className=' xl:w-[30rem] xl:h-[30rem] md:w-[20rem] md:h-[20rem] w-2/3 aspect-ratio rounded-xl transition-all duration-300 hover:scale-105 hover:cursor-pointer active:scale-95' 
+                      className=' md:w-[40vh] md:h-[40vh] w-2/3 aspect-ratio rounded-xl transition-all duration-300 hover:scale-105 hover:cursor-pointer active:scale-95' 
                       onClick={() => {openModal(eyeglass.model, eyeglass.images, index)}}
                     />
                   ))

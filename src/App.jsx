@@ -236,7 +236,7 @@ export default function CameraComponent() {
         loading
         &&
         <div className="w-full h-screen flex items-center justify-center fixed bg-black/40 top-0 z-10 p-6">
-          <div className="w-[30rem] h-fit bg-white p-12 rounded-lg shadow-lg">
+          <div className="w-[30rem] h-fit bg-white p-12 rounded-xl shadow-lg">
             <div className="w-full flex justify-center">
               <img src={loadingSpinner} alt="Loading" className="w-1/2"/>
             </div>
@@ -250,7 +250,7 @@ export default function CameraComponent() {
         error
         &&
         <div className="w-full h-screen flex items-center justify-center fixed bg-black/40 top-0 z-10 p-6">
-          <div className="w-[30rem] h-fit bg-white p-12 rounded-lg shadow-lg relative">
+          <div className="w-[30rem] h-fit bg-white p-12 rounded-xl shadow-lg relative">
             <div className="absolute top-3 right-3 cursor-pointer" onClick={() => setError(null)}>
               <FiX size={"25"}/>
             </div>

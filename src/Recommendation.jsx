@@ -1,5 +1,5 @@
 import React, { use, useEffect, useRef, useState } from 'react'
-import { FiArrowRight, FiArrowLeft, FiX } from "react-icons/fi";
+import { FiArrowRight, FiArrowLeft, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Zoom, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export default function Recommendation({item}) {
-  // const swiperRef = useRef(null);
+  const swiperRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [eyeglassModel, setEyeglassModel] = useState(null);
@@ -30,6 +30,27 @@ export default function Recommendation({item}) {
 
     document.body.style.overflow = 'unset';
   };
+
+  const zoomControl = (type) => {
+    const swiper = swiperRef.current.swiper;
+    if(!swiper) return;
+
+    const zoom = swiper.zoom;
+    const currentSlide = swiper.slides[swiper.activeIndex];
+    const zoomEl = currentSlide.querySelector('.swiper-zoom-container');
+
+    let newScale = zoom.scale;
+
+    if (type === 'in') {
+      newScale = Math.min(zoom.scale + 0.5, 3);  
+      zoom.in(newScale);
+    }
+    if (type === 'out') {
+      // newScale = Math.max(zoom.scale - 0.5, 1);
+      zoom.out();
+    }
+
+  }
 
   // const nextImage = () => {
   //   if (selectedImage) {
@@ -79,16 +100,21 @@ export default function Recommendation({item}) {
           (
             <div className='fixed top-0 left-0 w-full h-screen bg-black/80 z-0'>
               <div className='w-full h-[5rem] px-5 flex items-center justify-between bg-black/50'>
-              <div></div>
-                <h1 className='text-white font-semibold text-xl md:text-3xl'>
+                <div className=' w-32 hidden md:block'></div>
+                <h1 className='text-white font-semibold text-xl md:text-3xl transition-all duration-300'>
                   {eyeglassModel}
                 </h1>
+                <div className='flex gap-5 items-center w-32'>
+                  <FiZoomOut className='text-white hover:cursor-pointer' size={24} onClick={() => zoomControl('out')}/>
+                  <FiZoomIn className='text-white hover:cursor-pointer' size={24} onClick={() => zoomControl('in')}/>
+                  <span className='text-white'>|</span>
                   <FiX className='text-white hover:cursor-pointer' size={24} onClick={closeModal}/>
+                </div>
                 {/* <button className='bg-gray-900 p-2 rounded-full hover:cursor-pointer hover:bg-gray-800 active:bg-gray-700 active:scale-90 transition-all duration-300' onClick={closeModal}>
                 </button> */}
               </div>
               <Swiper
-                // ref={swiperRef}
+                ref={swiperRef}
                 modules={[Zoom, Navigation, Pagination]}
                 zoom={true}
                 navigation
@@ -108,6 +134,7 @@ export default function Recommendation({item}) {
                   </SwiperSlide>
                 ))}
               </Swiper>
+
               {/* <div className='w-full h-[5rem] px-5 flex items-center justify-between bg-black/50'>
               <div></div>
                 <h1 className='text-white font-semibold text-xl md:text-3xl'>

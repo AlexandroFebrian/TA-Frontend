@@ -10,7 +10,7 @@ import Recommendation from "./Recommendation";
 import { FiX } from "react-icons/fi";
 
 export default function CameraComponent() {
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
+  const backendURL = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:5000";
   
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -191,19 +191,19 @@ export default function CameraComponent() {
         `${backendURL}/get-recommendation`, 
         formData
       ).then(response => {
-          // console.log(response.data);
-          if(response.status == 200){
-            setResponse(response.data.faces);
-          }else{
-            setError(response.data.error)
-          }
-          setLoading(false);
-        })
-        .catch(error => {
-          // console.log(error.response.data.error);
-          setLoading(false);
-          setError(error.response?.data.error || error.message);
-        });
+        // console.log(response.data);
+        if(response.status == 200){
+          setResponse(response.data.faces);
+        }else{
+          setError(response.data.error)
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        // console.log(error.response.data.error);
+        setLoading(false);
+        setError(error.response?.data.error || error.message);
+      });
     }
   }
 
